@@ -14,19 +14,24 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
 
   const onLogin = async () => {
+    let loadingToast;
     try {
       setLoading(true);
+      loadingToast = toast.loading("Waiting for the action to complete...");
       const response = await axios.post("/api/users/login", user);
       console.log(
         "🚀 ~ file: page.tsx:20 ~ onLogin ~ response:",
         response.data
       );
+      toast.dismiss(loadingToast);
       toast.success("Login Successfully!");
       router.push("/profile");
     } catch (err: any) {
+      toast.dismiss(loadingToast);
       console.log("🚀 ~ file: page.tsx:16 ~ onLogin ~ err:", err.message);
       toast.error("Login failed!");
     } finally {
+      toast.dismiss(loadingToast);
       setLoading(false);
     }
   };
@@ -41,6 +46,7 @@ export default function LoginPage() {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen py-2 ">
+      <Toaster />
       <h1 className="mb-4">{loading ? "Processing request" : "Login"}</h1>
       <hr />
       <label htmlFor="email">Email</label>
