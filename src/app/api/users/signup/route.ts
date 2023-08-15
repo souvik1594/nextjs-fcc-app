@@ -2,6 +2,7 @@ import { connect } from "@/dbConfig/dbConfig";
 import User from "@/model/userModel";
 import { NextRequest, NextResponse } from "next/server";
 import bcryptjs from "bcryptjs";
+import { sendmailer } from "@/helper/mailer";
 connect();
 
 export async function POST(request: NextRequest) {
@@ -33,7 +34,8 @@ export async function POST(request: NextRequest) {
     });
     const saveduser = await newUser.save();
     console.log("🚀 ~ file: route.ts:35 ~ POST ~ saveduser:", saveduser);
-
+    //Send Verification email
+    await sendmailer({ email, emailType: "VERIFY", userId: saveduser._id });
     return NextResponse.json({
       message: "User is saved",
       success: true,
